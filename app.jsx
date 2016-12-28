@@ -25,23 +25,43 @@ var CONTACTS = [
 var Contact = React.createClass({
     render: function() {
         return (
-            <li>
-                <img src={this.props.image} width="60px" height="60px"/>
-                <div>{this.props.name}</div>
-                <div>{this.props.number}</div>
+            <li className="contact">
+                <img className="contact-image" src={this.props.image} width="60px" height="60px"/>
+                <div className="contact-info">
+                    <div className="contact-name">
+                        {this.props.name}
+                    </div>
+                    <div className="contact-number">
+                        {this.props.phoneNumber}
+                    </div>
+                </div>
             </li>
         );
     }
 });
 
-var ContactList = React.createClass({
+var ContactsList = React.createClass({
+    getInitialState: function() {
+        return {displayedContacts: CONTACTS};
+    },
+
+    handleSearch: function(event) {
+        var searchQuery = event.target.value.toLowerCase();
+        var displayedContacts = CONTACTS.filter(function(el) {
+            var searchValue = el.name.toLowerCase();
+            return searchValue.indexOf(searchQuery) !== -1;
+        });
+
+        this.setState({displayedContacts: displayedContacts});
+    },
 
     render: function() {
         return (
-            <div>
-                <ul>
-                    {CONTACTS.map(function(el) {
-                        return (<Contact key={el.id} name={el.name} number={el.phoneNumber} image={el.image}/>);
+            <div className="contacts">
+                <input type="text" placeholder="Search..." className="search-field" onChange={this.handleSearch}/>
+                <ul className="contacts-list">
+                    {this.state.displayedContacts.map(function(el) {
+                        return <Contact key={el.id} name={el.name} phoneNumber={el.phoneNumber} image={el.image}/>;
                     })
 }
                 </ul>
@@ -51,4 +71,4 @@ var ContactList = React.createClass({
 });
 
 ReactDOM.render(
-    <ContactList/>, document.getElementById('app'));
+    <ContactsList/>, document.getElementById("app"));
